@@ -1,1 +1,1 @@
-# HW3
+# Coupling Jump Diffusion with Multifractal Volatility Models
