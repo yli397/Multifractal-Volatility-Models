@@ -3,7 +3,7 @@
 ### Multifratal Introduction:
 - https://arxiv.org/pdf/0804.0747.pdf
 
-- https://towardsai.net/p/mathematics/in-homage-to-benoit-mandelbrot
+- [Benoit Mandelbrot](https://towardsai.net/p/mathematics/in-homage-to-benoit-mandelbrot)
 
 ### Multifractal analysis of financial markets:
 - [Review](https://arxiv.org/pdf/1805.04750.pdf)
