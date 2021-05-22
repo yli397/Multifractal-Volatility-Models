@@ -15,3 +15,6 @@
 
 ### Hypothesis Test for Multifractal:
 - [Hypothesis Test for Multifractal](https://github.com/yli397/Multifractal-Volatility-Models/blob/master/Papers/Hypothesis%20Test.pdf)
+
+### Machine Learning Classification of Multifractional Brownian Motion Realizations 
+- http://ceur-ws.org/Vol-2608/paper73.pdf
