@@ -11,3 +11,7 @@
 
 ### Bootstrap for Empirical Multifractal Analysis:
 - http://perso.ens-lyon.fr/patrice.abry/ARTICLES_PDF/WendtAbryJaffard07.pdf
+
+
+### Hypothesis Test for Multifractal:
+[Hypothesis Test](./Papers/Hypothesis Test.pdf)
