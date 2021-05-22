@@ -1,7 +1,7 @@
 # Coupling Jump Diffusion with Multifractal Volatility Models
 
 ### Multifratal Introduction:
-- https://arxiv.org/pdf/0804.0747.pdf
+- [Fractal and Multifractal Time Series](https://arxiv.org/pdf/0804.0747.pdf)
 
 - [Benoit Mandelbrot](https://towardsai.net/p/mathematics/in-homage-to-benoit-mandelbrot)
 
