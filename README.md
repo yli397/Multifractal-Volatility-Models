@@ -14,4 +14,4 @@
 
 
 ### Hypothesis Test for Multifractal:
-[Hypothesis Test](./Papers/Hypothesis Test.pdf)
+[Hypothesis Test](https://github.com/yli397/Multifractal-Volatility-Models/blob/master/Papers/Hypothesis%20Test.pdf)
