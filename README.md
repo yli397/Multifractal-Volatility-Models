@@ -5,6 +5,8 @@
 
 - [Benoit Mandelbrot](https://towardsai.net/p/mathematics/in-homage-to-benoit-mandelbrot)
 
+- [Long Memory and Regime Shifts in Asset Volatility](http://www.jonathankinlay.com/Articles/Long%20Memory%20and%20Regime%20Shifts%20in%20Asset%20Volatility.pdf)
+
 ### Multifractal analysis of financial markets:
 - [Review](https://arxiv.org/pdf/1805.04750.pdf)
 
