@@ -7,4 +7,4 @@
 
 
 #### Bootstrap for Empirical Multifractal Analysis:
-http://perso.ens-lyon.fr/patrice.abry/ARTICLES_PDF/WendtAbryJaffard07.pdf
+- http://perso.ens-lyon.fr/patrice.abry/ARTICLES_PDF/WendtAbryJaffard07.pdf
