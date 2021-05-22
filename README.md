@@ -6,7 +6,7 @@
 - https://towardsai.net/p/mathematics/in-homage-to-benoit-mandelbrot
 
 ### Multifractal analysis of financial markets:
-- https://arxiv.org/pdf/1805.04750.pdf
+- [Review]: https://arxiv.org/pdf/1805.04750.pdf
 
 
 ### Bootstrap for Empirical Multifractal Analysis:
