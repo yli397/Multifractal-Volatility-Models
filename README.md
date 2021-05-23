@@ -2,6 +2,7 @@
 
 ### Multifratal Introduction:
 - [Multifractal Methodology](https://github.com/yli397/Multifractal-Volatility-Models/blob/master/Papers/multifractal%20methodology.pdf)
+
 - [Introduction to Multifractal](http://www.stat.rice.edu/~riedi/Publ/PDF/intro.pdf)
 
 - [Fractal and Multifractal Time Series](https://arxiv.org/pdf/0804.0747.pdf)
