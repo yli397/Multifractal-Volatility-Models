@@ -17,6 +17,8 @@
 
 ### Bootstrap for Empirical Multifractal Analysis:
 - [Bootstrap application to hydrodynamic turbulence](http://perso.ens-lyon.fr/patrice.abry/ARTICLES_PDF/WendtAbryJaffard07.pdf)
+- [MFDFA: Efficient Multifractal Detrended Fluctuation Analysis in Python](https://arxiv.org/pdf/2104.10470.pdf)
+
 
 
 ### Hypothesis Test for Multifractal:
