@@ -1,0 +1,288 @@
+---
+title: "ITCH"
+output: html_document
+date: "2022-09-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+library(RITCH)
+```
+
+```{r}
+# use built in example dataset
+file <- system.file("extdata", "ex20101224.TEST_ITCH_50", package = "RITCH")
+
+# count the number of messages in the file
+msg_count <- count_messages(file)
+#> [Counting]   12,012 total messages found
+#> [Converting] to data.table
+#> [Done]       in 0.00 secs at 539.57MB/s
+dim(msg_count)
+#> [1] 22  2
+names(msg_count)
+#> [1] "msg_type" "count"
+
+# read the orders into a data.table
+orders <- read_orders(file)
+#> [Counting]   num messages 12,012
+#> [Counting]   num 'orders' messages 5,000
+#> [Converting] to data.table
+#> [Done]       in 0.08 secs at 6.06MB/s
+dim(orders)
+#> [1] 5000   13
+names(orders)
+#>  [1] "msg_type"        "stock_locate"    "tracking_number" "timestamp"       "order_ref"       "buy"            
+#>  [7] "shares"          "stock"           "price"           "mpid"            "date"            "datetime"       
+#> [13] "exchange"
+
+# read the first 100 trades
+trades <- read_trades(file, n_max = 100)
+#> [Note]       n_max overrides counting the messages. Number of messages may be off
+#> [Filter]     skip: 0 n_max: 100 (1 - 100)
+#> [Counting]   num 'trades' messages 300
+#> [Converting] to data.table
+#> [Done]       in 0.04 secs at 13.05MB/s
+dim(trades)
+#> [1] 100  14
+names(trades)
+#>  [1] "msg_type"        "stock_locate"    "tracking_number" "timestamp"       "order_ref"       "buy"            
+#>  [7] "shares"          "stock"           "price"           "match_number"    "cross_type"      "date"           
+#> [13] "datetime"        "exchange"
+```
+
+```{r}
+file <- system.file("extdata", "ex20101224.TEST_ITCH_50", package = "RITCH")
+md <- read_modifications(file, quiet = TRUE)
+dim(md)
+#> [1] 2000   13
+names(md)
+#>  [1] "msg_type"        "stock_locate"    "tracking_number" "timestamp"       "order_ref"       "shares"         
+#>  [7] "match_number"    "printable"       "price"           "new_order_ref"   "date"            "datetime"       
+#> [13] "exchange"
+
+outfile <- write_itch(md, "modifications", compress = TRUE)
+#> [Counting]   2,000 messages (44,748 bytes) found
+#> [Converting] to binary .
+#> [Writing]    to file
+#> [Outfile]    'modifications_20101224.TEST_ITCH_50.gz'
+#> [Done]       in 0.01 secs at 3.43MB/s
+
+# compare file sizes
+files <- c(full_file = file, subset_file = outfile)
+format_bytes(sapply(files, file.size))
+#>   full_file subset_file 
+#>  "465.05KB"   "23.95KB"
+
+```
+
+```{r}
+## Read in the different message classes
+file <- system.file("extdata", "ex20101224.TEST_ITCH_50", package = "RITCH")
+
+# read in the different message types
+data <- read_itch(file, 
+                  c("system_events", "stock_directory", "orders"),
+                  filter_stock_locate = c(1, 3), 
+                  quiet = TRUE)
+
+str(data, max.level = 1)
+#> List of 2
+#>  $ stock_directory:Classes 'data.table' and 'data.frame':    2 obs. of  21 variables:
+#>   ..- attr(*, ".internal.selfref")=<externalptr> 
+#>  $ orders         :Classes 'data.table' and 'data.frame':    2518 obs. of  13 variables:
+#>   ..- attr(*, ".internal.selfref")=<externalptr>
+
+
+## Write the different message classes
+outfile <- write_itch(data, 
+                      "alc_char_subset", 
+                      compress = TRUE)
+#> [Counting]   2,520 messages (95,766 bytes) found
+#> [Converting] to binary .
+#> [Writing]    to file
+#> [Outfile]    'alc_char_subset_20101224.TEST_ITCH_50.gz'
+#> [Done]       in 0.01 secs at 4.53MB/s
+outfile
+#> [1] "alc_char_subset_20101224.TEST_ITCH_50.gz"
+
+# compare file sizes
+format_bytes(
+  sapply(c(full_file = file, subset_file = outfile), 
+         file.size)
+)
+#>   full_file subset_file 
+#>  "465.05KB"   "37.89KB"
+
+
+## Lastly, compare the two datasets to see if they are identical
+data2 <- read_itch(outfile, quiet = TRUE)
+all.equal(data, data2)
+#> [1] TRUE
+```
+
+```{r}
+file <- system.file("extdata", "ex20101224.TEST_ITCH_50", package = "RITCH")
+count_messages(file, add_meta_data = TRUE, quiet = TRUE)
+#>     msg_type count                 msg_class                                  msg_name  doc_nr
+#>  1:        S     6             system_events                      System Event Message     4.1
+#>  2:        R     3           stock_directory                           Stock Directory   4.2.1
+#>  3:        H     3            trading_status                      Stock Trading Action   4.2.2
+#>  4:        Y     0                   reg_sho                       Reg SHO Restriction   4.2.3
+#>  5:        L     0 market_participant_states               Market Participant Position   4.2.4
+#>  6:        V     0                      mwcb                MWCB Decline Level Message 4.2.5.1
+#>  7:        W     0                      mwcb                       MWCB Status Message 4.2.5.2
+#>  8:        K     0                       ipo                 IPO Quoting Period Update   4.2.6
+#>  9:        J     0                      luld                       LULD Auction Collar   4.2.7
+#> 10:        h     0            trading_status                          Operational Halt   4.2.8
+#> 11:        A  4997                    orders                         Add Order Message   4.3.1
+#> 12:        F     3                    orders      Add Order - MPID Attribution Message   4.3.2
+#> 13:        E   198             modifications                    Order Executed Message   4.4.1
+#> 14:        C     0             modifications Order Executed Message With Price Message   4.4.2
+#> 15:        X    45             modifications                      Order Cancel Message   4.4.3
+#> 16:        D  1745             modifications                      Order Delete Message   4.4.4
+#> 17:        U    12             modifications                     Order Replace Message   4.4.5
+#> 18:        P  5000                    trades                 Trade Message (Non-Cross)   4.5.1
+#> 19:        Q     0                    trades                       Cross Trade Message   4.5.2
+#> 20:        B     0                    trades                      Broken Trade Message   4.5.3
+#> 21:        I     0                      noii                              NOII Message     4.6
+#> 22:        N     0                      rpii                   Retail Interest Message     4.7
+#>     msg_type count                 msg_class                                  msg_name  doc_nr
+```
+
+```{r}
+# count messages once
+n_msgs <- count_messages(file, quiet = TRUE)
+
+# use counted messages multiple times, saving file passes
+orders <- read_orders(file, quiet = TRUE, n_max = n_msgs)
+trades <- read_trades(file, quiet = TRUE, n_max = n_msgs)
+```
+
+```{r}
+file <- system.file("extdata", "ex20101224.TEST_ITCH_50", package = "RITCH")
+
+n_messages <- count_orders(count_messages(file, quiet = TRUE))
+n_messages
+#> [1] 5000
+
+# read 1000 messages at a time
+n_batch <- 1000
+n_parsed <- 0
+
+while (n_parsed < n_messages) {
+  cat(sprintf("Parsing Batch %04i - %04i", n_parsed, n_parsed + n_batch))
+  # read in a batch
+  df <- read_orders(file, quiet = TRUE, skip = n_parsed, n_max = n_batch)
+  cat(sprintf(": with %04i orders\n", nrow(df)))
+  # use the data
+  # ...
+  n_parsed <- n_parsed + n_batch
+}
+#> Parsing Batch 0000 - 1000: with 1000 orders
+#> Parsing Batch 1000 - 2000: with 1000 orders
+#> Parsing Batch 2000 - 3000: with 1000 orders
+#> Parsing Batch 3000 - 4000: with 1000 orders
+#> Parsing Batch 4000 - 5000: with 1000 orders
+```
+
+```{r}
+# read in the stock directory as we filter for stock names later on
+sdir <- read_stock_directory(file, quiet = TRUE)
+
+od <- read_orders(
+  file, 
+  filter_msg_type = "A",          # take only 'No MPID add orders'
+  min_timestamp = 43200000000000, # start at 12:00:00.000000
+  max_timestamp = 55800000000000, # end at 15:30:00.000000
+  filter_stock_locate = 1,        # take only stock with code 1
+  filter_stock = "CHAR",          # but also take stock CHAR
+  stock_directory = sdir          # provide the stock_directory to match stock names to stock_locates
+)
+#> [Filter]     msg_type: 'A'
+#> [Filter]     timestamp: 43200000000000 - 55800000000000 
+#> [Filter]     stock_locate: '1', '3'
+#> NOTE: as filter arguments were given, the number of messages may be off
+#> [Counting]   num messages 12,012
+#> [Counting]   num 'orders' messages 5,000
+#> [Converting] to data.table
+#> [Done]       in 0.04 secs at 11.14MB/s
+
+# count the different message types
+od[, .(n = .N), by = msg_type]
+#>    msg_type    n
+#> 1:        A 1082
+# see if the timestamp is in the specified range
+range(od$timestamp)
+#> integer64
+#> [1] 43235810473334 55792143963723
+# count the stock/stock-locate codes
+od[, .(n = .N), by = .(stock_locate, stock)]
+#>    stock_locate stock   n
+#> 1:            3  CHAR 574
+#> 2:            1   ALC 508
+```
+
+```{r}
+# the function returns the final name of the output file
+outfile <- filter_itch(
+  infile = file,
+  outfile = "filtered",
+  filter_msg_type = "A",          # take only 'No MPID add orders'
+  min_timestamp = 43200000000000, # start at 12:00:00.000000
+  max_timestamp = 55800000000000, # end at 15:30:00.000000
+  filter_stock_locate = 1,        # take only stock with code 1
+  filter_stock = "CHAR",          # but also take stock CHAR
+  stock_directory = sdir          # provide the stock_directory to match stock names to stock_locates
+)
+#> [Filter]     msg_type: 'A'
+#> [Filter]     timestamp: 43200000000000 - 55800000000000 
+#> [Filter]     stock_locate: '1', '3'
+#> [Bytes]      scanned 465048, filtered 41116
+#> [Messages]   scanned 10979, filtered 1082
+#> [Done]       in 0.04 secs at 11.57MB/s
+
+format_bytes(file.size(outfile))
+#> [1] "41.12KB"
+
+# read in the orders from the filtered file
+od2 <- read_orders(outfile)
+#> [Counting]   num messages 1,082
+#> [Counting]   num 'orders' messages 1,082
+#> [Converting] to data.table
+#> [Done]       in 0.04 secs at 1.03MB/s
+
+# check that the filtered dataset contains the same information as in the example above
+all.equal(od, od2)
+#> [1] TRUE
+```
+
+```{r}
+library(ggplot2)
+
+file <- system.file("extdata", "ex20101224.TEST_ITCH_50", package = "RITCH")
+
+# load the data
+orders <- read_orders(file, quiet = TRUE)
+trades <- read_trades(file, quiet = TRUE)
+
+# replace the buy-factor with something more useful
+orders[, buy := ifelse(buy, "Bid", "Ask")]
+
+ggplot() +
+  geom_point(data = orders, 
+             aes(x = as.POSIXct(datetime), y = price, color = buy), alpha = 0.2) +
+  geom_step(data = trades, aes(x = as.POSIXct(datetime), y = price), size = 0.2) +
+  facet_grid(stock~., scales = "free_y") +
+  theme_light() +
+  labs(title = "Orders and Trades of Three Simulated Stocks",
+       subtitle = "Date: 2010-12-24 | Exchange: TEST", 
+       caption = "Source: RITCH package", x = "Time", y = "Price", color = "Side") +
+  scale_y_continuous(labels = scales::dollar) +
+  scale_color_brewer(palette = "Set1")
+```
